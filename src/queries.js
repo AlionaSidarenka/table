@@ -1,13 +1,13 @@
 import gql from "graphql-tag";
 
 export const REPOS = gql`
-    query listRepos($after: String) {
+    query listRepos($query: String!, $after: String) {
       rateLimit {
         cost
         remaining
         resetAt
       }
-      search(query: "is:public", type: REPOSITORY, first: 100, after: $after) {
+      search(query: $query, type: REPOSITORY, first: 100, after: $after) {
         repositoryCount
         pageInfo {
           endCursor

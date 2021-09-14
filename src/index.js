@@ -43,12 +43,11 @@ const client = new ApolloClient({
                         // Concatenate the incoming list items with
                         // the existing list items.
                         merge(existing, incoming) {
-                            debugger;
                             const edges = [
                                 ...(existing ? existing.edges : []),
                                 ...incoming.edges
                             ];
-                            debugger;
+
                             return {...incoming, ...{edges}};
                         },
                     }
