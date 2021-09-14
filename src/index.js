@@ -3,12 +3,69 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import {ApolloClient, ApolloProvider, createHttpLink, InMemoryCache} from "@apollo/client";
+import {baseUrl, headers} from "./config";
+
+const client = new ApolloClient({
+    uri: baseUrl,
+    link: createHttpLink({
+        uri: baseUrl,
+        headers,
+    }),
+    cache: new InMemoryCache({
+        typePolicies: {
+            Query: {
+                fields: {
+                    filteredRepos: (existing, {args, storage, readField}) => {
+                        const repos = readField('search');
+                        let edges;
+                        const filterValue = filter() || '';
+
+                        if (repos) {
+                            edges = readField('edges', repos);
+                            return {
+                                ...existing, ...{
+                                    edges: edges.filter((edge) => {
+                                        return edge.node.name.indexOf(filterValue) !== -1;
+                                    })
+                                }
+                            };
+                        }
+
+                        return {...existing};
+                    },
+                    search: {
+                        // Don't cache separate results based on
+                        // any of this field's arguments.
+                        keyArgs: false,
+                        // Concatenate the incoming list items with
+                        // the existing list items.
+                        merge(existing, incoming) {
+                            debugger;
+                            const edges = [
+                                ...(existing ? existing.edges : []),
+                                ...incoming.edges
+                            ];
+                            debugger;
+                            return {...incoming, ...{edges}};
+                        },
+                    }
+                },
+
+            }
+        },
+    })
+});
+
+export const filter = client.cache.makeVar();
 
 ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-  document.getElementById('root')
+    <React.StrictMode>
+        <ApolloProvider client={client}>
+            <App/>
+        </ApolloProvider>
+    </React.StrictMode>,
+    document.getElementById('root')
 );
 
 // If you want to start measuring performance in your app, pass a function
