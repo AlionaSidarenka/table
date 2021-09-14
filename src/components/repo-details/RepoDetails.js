@@ -3,7 +3,8 @@ import {
     BrowserRouter as Router,
     Switch,
     Route,
-    useRouteMatch
+    useRouteMatch,
+    withRouter
 } from "react-router-dom";
 import MainInfo from "./main-info/MainInfo";
 import Comments from "./comments/Comments";
@@ -12,6 +13,7 @@ import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import TabPanel from "./tab-panel/TabPanel";
+import PieChart from "../chart/Chart";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -21,9 +23,10 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export default function RepoDetails(props) {
+function RepoDetails(props) {
     const classes = useStyles();
     const [value, setValue] = React.useState(0);
+    const { state: { row } = { row: {} } }= props.location;
 
     const handleChange = useCallback((event, newValue) => {
         setValue(newValue);
@@ -42,7 +45,10 @@ export default function RepoDetails(props) {
                 <Tab label="Comments" />
             </Tabs>
             <TabPanel value={value} index={0}>
-                <MainInfo></MainInfo>
+                <MainInfo>
+                    {/* @TO_DO make request for langs on direct access to details page */}
+                    <PieChart data={row.languages.edges.map(item => ({color: item.node.color, value: item.size, title: item.node.name}))}/>
+                </MainInfo>
             </TabPanel>
             <TabPanel value={value} index={1}>
                 <Comments></Comments>
@@ -50,3 +56,5 @@ export default function RepoDetails(props) {
         </Paper>
     );
 }
+
+export default withRouter(RepoDetails);

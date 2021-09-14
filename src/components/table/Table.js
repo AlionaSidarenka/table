@@ -103,7 +103,7 @@ export default function MTable(props) {
 
                                         return (
                                             <TableCell key={column.id}>
-                                                {column.id === 'name' ? <Link to={`/details/${value}`}> { value } </Link> : value}
+                                                {column.id === 'name' ? <Link to={{pathname: `/details/${value}`, state: {row}}}> { value } </Link> : value}
                                             </TableCell>
                                         );
                                     })

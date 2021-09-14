@@ -23,6 +23,16 @@ export const REPOS = gql`
               }
               stargazerCount
               description
+              languages(first: 100) {
+                edges {
+                  node {
+                    id
+                    color
+                    name
+                  }
+                  size
+                }
+              }
             }
           }
         }
