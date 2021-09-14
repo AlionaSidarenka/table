@@ -8,7 +8,8 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
-import { filter } from '../../index';
+import {filter} from '../../index';
+import {Link} from "react-router-dom";
 
 const useStyles = makeStyles({
     root: {
@@ -96,18 +97,19 @@ export default function MTable(props) {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {props.rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
+                        {   props.rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
                             return (
                                 <TableRow hover role="checkbox" tabIndex={-1} key={row.url}>
-                                    {columns.map((column) => {
+                                {   columns.map((column) => {
                                         const value = row[column.id];
 
                                         return (
                                             <TableCell key={column.id}>
-                                                {value}
+                                                {column.id === 'name' ? <Link to={`/details/${value}`}> { value } </Link> : value}
                                             </TableCell>
                                         );
-                                    })}
+                                    })
+                                }
                                 </TableRow>
                             );
                         })}

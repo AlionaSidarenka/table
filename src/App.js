@@ -1,34 +1,31 @@
 import './App.css';
-import {REPOS} from "./config";
-import MTable from "./components/table/table";
-import {useQuery} from "@apollo/client";
-import {useCallback, useMemo} from "react";
+import MTable from "./components/table/Table";
+import RepoDetails from "./components/repo-details/RepoDetails";
+import {
+    BrowserRouter as Router,
+    Switch,
+    Route
+} from "react-router-dom";
+import {useGithub} from "./hooks/useGithub";
 
 function App() {
-    const {loading, error, data, fetchMore} = useQuery(REPOS);
-    const fetchMoreData = useCallback(() => {
-        fetchMore({
-                variables: {
-                    after: data.search.pageInfo.endCursor
-                }
-        });
-    }, [fetchMore, data]);
+    const { loading, error, rows, count, fetchMoreData } = useGithub();
 
-    const rows = useMemo(() => data ? data.search.edges.map(edge => ({...edge.node, owner: edge.node.owner.login})) : [], [data]);
-
-    if (loading) {
-        return <p>Loading...</p>;
-    }
-
-    if (error) {
-        return <p>Error...</p>;
-    }
-
-    return (
-        <MTable fetchMoreData={fetchMoreData}
-                rows={rows}
-                count={data.search.repositoryCount}
-        />
+    return (<Router>
+            <Switch>
+                <Route path="/" exact>
+                    <MTable fetchMoreData={fetchMoreData}
+                            rows={rows}
+                            loading={loading}
+                            error={error}
+                            count={count}
+                    />
+                </Route>
+                <Route path="/details/:id">
+                    <RepoDetails />
+                </Route>
+            </Switch>
+        </Router>
     );
 }
 
