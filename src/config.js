@@ -1,7 +1,7 @@
 import gql from "graphql-tag";
 
 export const githibData = {
-    token: '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',
+    token: '',
     name: 'AlionaSidarenka'
 };
 
