@@ -5,6 +5,8 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import {ApolloClient, ApolloProvider, createHttpLink, InMemoryCache} from "@apollo/client";
 import {baseUrl, headers} from "./config";
+import { Provider} from "react-redux";
+import store from "./store";
 
 const client = new ApolloClient({
     uri: baseUrl,
@@ -61,9 +63,11 @@ export const filter = client.cache.makeVar();
 
 ReactDOM.render(
     <React.StrictMode>
-        <ApolloProvider client={client}>
-            <App/>
-        </ApolloProvider>
+        <Provider store={store}>
+            <ApolloProvider client={client}>
+                <App/>
+            </ApolloProvider>
+        </Provider>
     </React.StrictMode>,
     document.getElementById('root')
 );

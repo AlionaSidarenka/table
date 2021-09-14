@@ -78,29 +78,27 @@ export default function MTable(props) {
 
     return (
         <Paper className={classes.root}>
-            <input type="text"
-                   value={filterValue}
-                   onChange={handleFilterChange}
-            />
             <TableContainer className={classes.container}>
                 <Table stickyHeader aria-label="sticky table">
-                    <TableHead>
-                        <TableRow>
-                            {columns.map((column) => (
-                                <TableCell
-                                    key={column.id}
-                                    style={{minWidth: column.minWidth}}
-                                >
-                                    {column.label}
-                                </TableCell>
-                            ))}
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
+                    {props.loading ? <tbody><tr><td>Loading...</td></tr></tbody> : ( // некрасиво
+                        <>
+                        <TableHead>
+                            <TableRow>
+                                {columns.map((column) => (
+                                    <TableCell
+                                        key={column.id}
+                                        style={{minWidth: column.minWidth}}
+                                    >
+                                        {column.label}
+                                    </TableCell>
+                                ))}
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
                         {   props.rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
                             return (
                                 <TableRow hover role="checkbox" tabIndex={-1} key={row.url}>
-                                {   columns.map((column) => {
+                                    {   columns.map((column) => {
                                         const value = row[column.id];
 
                                         return (
@@ -109,14 +107,17 @@ export default function MTable(props) {
                                             </TableCell>
                                         );
                                     })
-                                }
+                                    }
                                 </TableRow>
                             );
                         })}
-                    </TableBody>
+                        </TableBody>
+                        </>
+                    )}
                 </Table>
             </TableContainer>
             <TablePagination
+                disabled={props.loading} // не работает
                 rowsPerPageOptions={[5, 10, 25]}
                 component="div"
                 count={props.count}

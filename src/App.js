@@ -7,26 +7,31 @@ import {
     Route
 } from "react-router-dom";
 import {useGithub} from "./hooks/useGithub";
+import React from "react";
+import Appbar from "./components/app-bar/Appbar";
 
 function App() {
     const { loading, error, rows, count, fetchMoreData } = useGithub();
 
-    return (<Router>
-            <Switch>
-                <Route path="/" exact>
-                    <MTable fetchMoreData={fetchMoreData}
-                            rows={rows}
-                            loading={loading}
-                            error={error}
-                            count={count}
-                    />
-                </Route>
-                <Route path="/details/:id">
-                    <RepoDetails />
-                </Route>
-            </Switch>
-        </Router>
-    );
+    return <>
+            <Appbar />
+            <Router>
+                <Switch>
+                    <Route path="/" exact>
+                        <MTable fetchMoreData={fetchMoreData}
+                                rows={rows}
+                                loading={loading}
+                                error={error}
+                                count={count}
+                        />
+                    </Route>
+                    <Route path="/details/:id">
+                        <RepoDetails />
+                    </Route>
+                </Switch>
+            </Router>
+        </>
+    ;
 }
 
 export default App;
